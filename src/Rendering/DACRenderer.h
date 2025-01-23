@@ -15,7 +15,7 @@ private:
 public:
   DACRenderer(float world_size, Font *font);
   void start();
-  friend void draw_timer(void *para);
+  friend void dac_draw_timer(void *para);
 };
 
 #endif

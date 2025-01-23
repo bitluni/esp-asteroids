@@ -4,17 +4,17 @@
 #include "Controls.hpp"
 
 class RotaryEncoder;
-class Button;
+class MyButton;
 
 class ESP32Controls : public Controls
 {
 private:
   RotaryEncoder *rotary_encoder;
-  Button *fire_button;
-  Button *thrust_button;
+  MyButton *fire_button;
+  MyButton *thrust_button;
 
 public:
-  ESP32Controls(RotaryEncoder *rotary_encoder, Button *fire_button, Button *thrust_button);
+  ESP32Controls(RotaryEncoder *rotary_encoder, MyButton *fire_button, MyButton *thrust_button);
   bool is_firing();
   bool is_thrusting();
   float get_direction();

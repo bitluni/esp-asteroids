@@ -32,6 +32,7 @@ Game::Game(float size, Controls *controls, SoundFX *sound_fx)
     this->sound_fx = sound_fx;
     this->controls = controls;
     this->current_game_state = GAME_STATE_START;
+//    this->current_game_state = GAME_STATE_PLAYING;
     // no gravity in our world
     b2Vec2 gravity(0.0f, 0.0f);
     this->world = new b2World(gravity);
@@ -54,7 +55,7 @@ void Game::start_new_game()
     reset();
     add_asteroids();
     add_player_ship();
-    add_lives();
+//    add_lives();
     set_score(0);
 }
 

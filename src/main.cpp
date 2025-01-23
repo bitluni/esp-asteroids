@@ -6,21 +6,27 @@
 #include "esp_log.h"
 #include "esp_spiffs.h"
 
-#include "WiFi.h"
+//#include "WiFi.h"
 #include "Rendering/DACRenderer.h"
+#include "Rendering/DMADACRenderer.h"
 #include "Rendering/HeltecOLEDRenderer.hpp"
 #include "Rendering/SPIRenderer.h"
 #include "Game/GameLoop.h"
 #include "Game/Game.hpp"
 #include "Controls/MechanicalRotaryEncoder.hpp"
 // #include "Controls/MagneticRotaryEncoder.hpp"
-#include "Controls/Button.hpp"
+#include "Controls/MyButton.hpp"
 #include "Controls/ESP32Controls.hpp"
 #include "Audio/I2SOutput.h"
 #include "Audio/WAVFile.h"
 #include "Audio/SoundFX.h"
 // #include "Fonts/HersheyFont.hpp"
 #include "Fonts/SimpleFont.hpp"
+
+#include <Arduino.h>
+//#include <M5Core2.h>
+//#include <M5Unified.h>
+#include <XboxSeriesXControllerESP32_asukiaaa.hpp>
 
 #define WORLD_SIZE 30
 #define ROTARY_ENCODER_CLK_GPIO GPIO_NUM_19
@@ -43,16 +49,57 @@ extern "C"
 
 static const char *TAG = "APP";
 
+
+// Required to replace with your xbox address
+XboxSeriesXControllerESP32_asukiaaa::Core xboxController("40:8e:2c:b8:34:d5");
+// any xbox controller
+//XboxSeriesXControllerESP32_asukiaaa::Core xboxController;
+
+
+void setup() {
+//  M5.begin(false, false);
+  Serial.begin(115200);
+  Serial.println("Starting NimBLE Client");
+//  xboxController.begin();
+}
+void loop() {
+  xboxController.onLoop();
+  if (xboxController.isConnected()) {
+    if (xboxController.isWaitingForFirstNotification()) {
+      ESP_LOGI(TAG, "waiting for first notification");
+    } else {
+//      ESP_LOGI(TAG, "Address: ");
+//      ESP_LOGI(TAG, xboxController.buildDeviceAddressStr());
+/*      ESP_LOGI(TAG, xboxController.xboxNotif.toString());
+      unsigned long receivedAt = xboxController.getReceiveNotificationAt();
+      uint16_t joystickMax = XboxControllerNotificationParser::maxJoy;
+      ESP_LOGI(TAG, "joyLHori rate: ");
+      ESP_LOGI(TAG, (float)xboxController.xboxNotif.joyLHori / joystickMax);
+      ESP_LOGI(TAG, "joyLVert rate: ");
+      ESP_LOGI(TAG, (float)xboxController.xboxNotif.joyLVert / joystickMax);
+      ESP_LOGI(TAG, "battery " + String(xboxController.battery) + "%");
+      ESP_LOGI(TAG, "received at " + String(receivedAt));*/
+    }
+  } else {
+    ESP_LOGI(TAG, "not connected");
+    if (xboxController.getCountFailedConnection() > 2) {
+      ESP.restart();
+    }
+  }
+}
 void app_main()
 {
   vTaskDelay(2000 / portTICK_PERIOD_MS);
   ESP_LOGI(TAG, "Started UP");
 
+  initArduino();
+  setup();
+
   esp_vfs_spiffs_conf_t conf = {
       .base_path = "/spiffs",
       .partition_label = NULL,
       .max_files = 5,
-      .format_if_mount_failed = true};
+      .format_if_mount_failed = false};
 
   esp_err_t ret = esp_vfs_spiffs_register(&conf);
 
@@ -97,8 +144,8 @@ void app_main()
   free_ram = esp_get_free_heap_size();
   ESP_LOGI(TAG, "Free ram after RotaryEncoder %d", free_ram);
 
-  Button *fire_button = new Button(FIRE_GPIO);
-  Button *thrust_button = new Button(THRUST_GPIO);
+  MyButton *fire_button = new MyButton(FIRE_GPIO);
+  MyButton *thrust_button = new MyButton(THRUST_GPIO);
 
   free_ram = esp_get_free_heap_size();
   ESP_LOGI(TAG, "Free ram after Button %d", free_ram);
@@ -113,9 +160,10 @@ void app_main()
   SimpleFont *font = new SimpleFont();
 
   ESP_LOGI(TAG, "Starting renderer");
-  // Renderer *renderer = new DACRenderer(WORLD_SIZE, font);
+   Renderer *renderer = new DACRenderer(WORLD_SIZE, font);
+//   Renderer *renderer = new DMADACRenderer(WORLD_SIZE, font);
   // Renderer *renderer = new HeltecOLEDRenderer(WORLD_SIZE, font);
-  Renderer *renderer = new SPIRenderer(WORLD_SIZE, font);
+//  Renderer *renderer = new SPIRenderer(WORLD_SIZE, font);
   renderer->start();
 
   GameLoop *game_loop = new GameLoop(game, renderer->get_render_buffer());
@@ -127,15 +175,23 @@ void app_main()
   free_ram = esp_get_free_heap_size();
   ESP_LOGI(TAG, "Free ram after renderer %d", free_ram);
 
-  float start = esp_timer_get_time() / 1E6f;
+  //wifi_init_sta();
+
+  volatile int rendered_frames_old=renderer->rendered_frames;
+  volatile int transactions_old=renderer->transactions;
   while (true)
   {
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-    float end = esp_timer_get_time() / 1E6f;
-    ESP_LOGI(TAG, "World steps %d, FPS %.0f, Transactions %d, Free RAM %d",
+//    loop();
+
+
+    vTaskDelay(1000/*500*/ / portTICK_PERIOD_MS);
+    ESP_LOGI(TAG, "World steps %d, FPS %d, PPS %d, Free RAM %d",
              game_loop->steps,
-             renderer->rendered_frames / (end - start),
-             renderer->transactions,
+             renderer->rendered_frames-rendered_frames_old,// / (end - start),
+//             renderer->transactions,
+             renderer->transactions-transactions_old,// / (end - start),
              esp_get_free_heap_size());
+    rendered_frames_old=renderer->rendered_frames;
+    transactions_old=renderer->transactions;
   }
 }

@@ -5,7 +5,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-void IRAM_ATTR draw_timer(void *para)
+void IRAM_ATTR dac_draw_timer(void *para)
 {
   timer_spinlock_take(TIMER_GROUP_0);
   DACRenderer *renderer = static_cast<DACRenderer *>(para);
@@ -24,8 +24,8 @@ void IRAM_ATTR DACRenderer::draw()
   {
     const DrawInstruction_t &instruction = render_buffer->display_frame->at(draw_position);
     set_laser(instruction.laser);
-    uint8_t output_x = instruction.x;
-    uint8_t output_y = instruction.y;
+    uint8_t output_y = instruction.x;
+    uint8_t output_x = instruction.y;
     dac_output_voltage(DAC_CHANNEL_1, output_x);
     dac_output_voltage(DAC_CHANNEL_2, output_y);
     draw_position++;
@@ -41,7 +41,7 @@ void IRAM_ATTR DACRenderer::draw()
   timer_spinlock_give(TIMER_GROUP_0);
 }
 
-void IRAM_ATTR timer_setup(void *param)
+void /*IRAM_ATTR*/ dac_timer_setup(void *param)
 {
   // set up the renderer timer
   timer_config_t config = {
@@ -50,7 +50,7 @@ void IRAM_ATTR timer_setup(void *param)
       .intr_type = TIMER_INTR_LEVEL,
       .counter_dir = TIMER_COUNT_UP,
       .auto_reload = TIMER_AUTORELOAD_EN,
-      .divider = 4000}; // default clock source is APB
+      .divider = 4000*6}; // default clock source is APB
   timer_init(TIMER_GROUP_0, TIMER_0, &config);
 
   // Timer's counter will initially start from value below.
@@ -60,7 +60,7 @@ void IRAM_ATTR timer_setup(void *param)
   // Configure the alarm value and the interrupt on alarm.
   timer_set_alarm_value(TIMER_GROUP_0, TIMER_0, 0x00000001ULL);
   timer_enable_intr(TIMER_GROUP_0, TIMER_0);
-  timer_isr_register(TIMER_GROUP_0, TIMER_0, draw_timer,
+  timer_isr_register(TIMER_GROUP_0, TIMER_0, dac_draw_timer,
                      param, ESP_INTR_FLAG_IRAM, NULL);
 
   timer_start(TIMER_GROUP_0, TIMER_0);
@@ -79,7 +79,9 @@ void DACRenderer::start()
 
   // make sure to start the task on CPU 1
   TaskHandle_t timer_setup_handle;
-  xTaskCreatePinnedToCore(timer_setup, "Draw Task", 4096, this, 0, &timer_setup_handle, 1);
+  xTaskCreatePinnedToCore(dac_timer_setup, "Draw Task", 4096, this, 0, &timer_setup_handle, 1);
+
+  Renderer::start();
 }
 
 DACRenderer::DACRenderer(float world_size, Font *font)

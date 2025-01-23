@@ -171,6 +171,32 @@ SimpleFont::SimpleFont()
   characters['V'].commands.push_back({.coords = b2Vec2(0, 0), .draw = false});
   characters['V'].commands.push_back({.coords = b2Vec2(0.5, 1), .draw = true});
   characters['V'].commands.push_back({.coords = b2Vec2(1, 0), .draw = true});
+
+  characters['H'].left_pos = 0;
+  characters['H'].right_pos = 1.5;
+
+  characters['H'].commands.push_back({.coords = b2Vec2(0, 0), .draw = false});
+  characters['H'].commands.push_back({.coords = b2Vec2(0, 1), .draw = true});
+  characters['H'].commands.push_back({.coords = b2Vec2(0, 0.5), .draw = false});
+  characters['H'].commands.push_back({.coords = b2Vec2(1, 0.5), .draw = true});
+  characters['H'].commands.push_back({.coords = b2Vec2(1, 0), .draw = false});
+  characters['H'].commands.push_back({.coords = b2Vec2(1, 1), .draw = true});
+
+  characters['T'].left_pos = 0;
+  characters['T'].right_pos = 1.5;
+
+  characters['T'].commands.push_back({.coords = b2Vec2(0, 0), .draw = false});
+  characters['T'].commands.push_back({.coords = b2Vec2(1, 0), .draw = true});
+  characters['T'].commands.push_back({.coords = b2Vec2(0.5, 0), .draw = false});
+  characters['T'].commands.push_back({.coords = b2Vec2(0.5, 1), .draw = true});
+
+  characters['!'].left_pos = 0;
+  characters['!'].right_pos = 0.5;
+
+  characters['!'].commands.push_back({.coords = b2Vec2(0.5, 0), .draw = false});
+  characters['!'].commands.push_back({.coords = b2Vec2(0.5, 0.5), .draw = true});
+  characters['!'].commands.push_back({.coords = b2Vec2(0.5, 1), .draw = false});
+  characters['!'].commands.push_back({.coords = b2Vec2(0.5, 1), .draw = true});
 }
 
 const Character *SimpleFont::get_character(char c)

@@ -162,7 +162,7 @@ void RenderBuffer::render_if_needed(Game *game)
             cur = draw_text(cur, 0.0f - text_size.x / 2.0f, 0.0f - text_size.y / 2.0f, main_text, false);
         }
         // move back to the top left corner ready for the next draw pass
-        renderSegment(false, cur, b2Vec2(-30, -30));
+//        renderSegment(false, cur, b2Vec2(-30, -30));
         // finished rendering
         needs_render = false;
     }

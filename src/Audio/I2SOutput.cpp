@@ -75,9 +75,9 @@ void i2sWriterTask(void *param)
 void I2SOutput::start()
 {
     i2s_pin_config_t i2sPins = {
-        .bck_io_num = GPIO_NUM_22,
-        .ws_io_num = GPIO_NUM_23,
-        .data_out_num = GPIO_NUM_21,
+        .bck_io_num = GPIO_NUM_12,
+        .ws_io_num = GPIO_NUM_0,
+        .data_out_num = GPIO_NUM_2,
         .data_in_num = -1};
     // i2s config for writing both channels of I2S
     i2s_config_t i2sConfig = {

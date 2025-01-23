@@ -24,8 +24,8 @@
    If you'd rather not, just change the below entries to strings with
    the config you want - ie #define EXAMPLE_WIFI_SSID "mywifissid"
 */
-#define EXAMPLE_ESP_WIFI_SSID "CMGResearch"
-#define EXAMPLE_ESP_WIFI_PASS "02087552867"
+#define EXAMPLE_ESP_WIFI_SSID ""
+#define EXAMPLE_ESP_WIFI_PASS ""
 #define EXAMPLE_ESP_MAXIMUM_RETRY 5
 
 /* FreeRTOS event group to signal when we are connected*/
@@ -73,6 +73,9 @@ static void event_handler(void *arg, esp_event_base_t event_base,
 
 void wifi_init_sta(void)
 {
+nvs_flash_init();
+
+
   s_wifi_event_group = xEventGroupCreate();
 
   ESP_ERROR_CHECK(esp_netif_init());
@@ -115,13 +118,13 @@ void wifi_init_sta(void)
      * happened. */
   if (bits & WIFI_CONNECTED_BIT)
   {
-    ESP_LOGI(TAG, "connected to ap SSID:%s password:%s",
-             EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS);
+    ESP_LOGI(TAG, "connected to ap"/*, SSID:%s password:%s",
+             EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS*/);
   }
   else if (bits & WIFI_FAIL_BIT)
   {
-    ESP_LOGI(TAG, "Failed to connect to SSID:%s, password:%s",
-             EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS);
+    ESP_LOGI(TAG, "Failed to connect"/*, to SSID:%s, password:%s",
+             EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS*/);
   }
   else
   {
