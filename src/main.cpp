@@ -17,6 +17,7 @@
 // #include "Controls/MagneticRotaryEncoder.hpp"
 #include "Controls/MyButton.hpp"
 #include "Controls/ESP32Controls.hpp"
+#include "Controls/XboxControls.hpp"
 #include "Audio/I2SOutput.h"
 #include "Audio/WAVFile.h"
 #include "Audio/SoundFX.h"
@@ -24,7 +25,7 @@
 #include "Fonts/SimpleFont.hpp"
 
 #include <Arduino.h>
-//#include <M5Core2.h>
+#include <M5Core2.h>
 //#include <M5Unified.h>
 #include <XboxSeriesXControllerESP32_asukiaaa.hpp>
 
@@ -51,16 +52,16 @@ static const char *TAG = "APP";
 
 
 // Required to replace with your xbox address
-XboxSeriesXControllerESP32_asukiaaa::Core xboxController("40:8e:2c:b8:34:d5");
+//XboxSeriesXControllerESP32_asukiaaa::Core xboxController("40:8e:2c:b8:34:d5");
 // any xbox controller
-//XboxSeriesXControllerESP32_asukiaaa::Core xboxController;
+XboxSeriesXControllerESP32_asukiaaa::Core xboxController;
 
 
 void setup() {
-//  M5.begin(false, false);
+  M5.begin(false, false, false, false, kMBusModeOutput, true);
   Serial.begin(115200);
   Serial.println("Starting NimBLE Client");
-//  xboxController.begin();
+  xboxController.begin();
 }
 void loop() {
   xboxController.onLoop();
@@ -68,17 +69,16 @@ void loop() {
     if (xboxController.isWaitingForFirstNotification()) {
       ESP_LOGI(TAG, "waiting for first notification");
     } else {
-//      ESP_LOGI(TAG, "Address: ");
-//      ESP_LOGI(TAG, xboxController.buildDeviceAddressStr());
-/*      ESP_LOGI(TAG, xboxController.xboxNotif.toString());
+      /*Serial.println("Address: " + xboxController.buildDeviceAddressStr());
+      Serial.print(xboxController.xboxNotif.toString());
       unsigned long receivedAt = xboxController.getReceiveNotificationAt();
       uint16_t joystickMax = XboxControllerNotificationParser::maxJoy;
-      ESP_LOGI(TAG, "joyLHori rate: ");
-      ESP_LOGI(TAG, (float)xboxController.xboxNotif.joyLHori / joystickMax);
-      ESP_LOGI(TAG, "joyLVert rate: ");
-      ESP_LOGI(TAG, (float)xboxController.xboxNotif.joyLVert / joystickMax);
-      ESP_LOGI(TAG, "battery " + String(xboxController.battery) + "%");
-      ESP_LOGI(TAG, "received at " + String(receivedAt));*/
+      Serial.print("joyLHori rate: ");
+      Serial.println((float)xboxController.xboxNotif.joyLHori / joystickMax);
+      Serial.print("joyLVert rate: ");
+      Serial.println((float)xboxController.xboxNotif.joyLVert / joystickMax);
+      Serial.println("battery " + String(xboxController.battery) + "%");
+      Serial.println("received at " + String(receivedAt));*/
     }
   } else {
     ESP_LOGI(TAG, "not connected");
@@ -94,6 +94,10 @@ void app_main()
 
   initArduino();
   setup();
+  while(!xboxController.isConnected()) {
+    loop();
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+  }
 
   esp_vfs_spiffs_conf_t conf = {
       .base_path = "/spiffs",
@@ -150,7 +154,8 @@ void app_main()
   free_ram = esp_get_free_heap_size();
   ESP_LOGI(TAG, "Free ram after Button %d", free_ram);
 
-  ESP32Controls *controls = new ESP32Controls(rotary_encoder, fire_button, thrust_button);
+//  ESP32Controls *controls = new ESP32Controls(rotary_encoder, fire_button, thrust_button);
+  XboxControls *controls = new XboxControls(&xboxController);
   ESP_LOGI(TAG, "Starting world");
   Game *game = new Game(WORLD_SIZE, controls, sound_fx);
 
@@ -181,7 +186,7 @@ void app_main()
   volatile int transactions_old=renderer->transactions;
   while (true)
   {
-//    loop();
+    loop();
 
 
     vTaskDelay(1000/*500*/ / portTICK_PERIOD_MS);

@@ -55,7 +55,7 @@ void Game::start_new_game()
     reset();
     add_asteroids();
     add_player_ship();
-//    add_lives();
+    add_lives();
     set_score(0);
 }
 

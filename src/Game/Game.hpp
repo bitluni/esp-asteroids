@@ -108,8 +108,8 @@ public:
     }
     bool show_score()
     {
-//        return current_game_state != GAME_STATE_START;
-        return false;
+        return current_game_state != GAME_STATE_START;
+//        return false;
     }
     const char *get_main_text()
     {
