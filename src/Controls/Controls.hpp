@@ -11,7 +11,7 @@
 class Controls {
 public:
     virtual bool is_firing() = 0;
-    virtual float is_thrusting() = 0;
+    virtual float get_thrust() = 0;
     virtual float get_direction() = 0;
 };
 

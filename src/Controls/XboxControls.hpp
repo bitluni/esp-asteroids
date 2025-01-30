@@ -14,7 +14,7 @@ private:
 public:
   XboxControls(XboxSeriesXControllerESP32_asukiaaa::Core *xboxController);
   bool is_firing();
-  float is_thrusting();
+  float get_thrust();
   float get_direction();
 };
 

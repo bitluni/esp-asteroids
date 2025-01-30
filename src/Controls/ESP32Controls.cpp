@@ -13,7 +13,7 @@ bool ESP32Controls::is_firing()
 //  return false;
 }
 
-float ESP32Controls::is_thrusting()
+float ESP32Controls::get_thrust()
 {
 //  return thrust_button->get_button_pushed() ? 1.0f : 0.0f;
   return 0.0f;

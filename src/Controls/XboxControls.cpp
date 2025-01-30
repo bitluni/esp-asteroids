@@ -16,7 +16,7 @@ bool XboxControls::is_firing()
   return xboxController->xboxNotif.btnA;
 }
 
-float XboxControls::is_thrusting()
+float XboxControls::get_thrust()
 {
   return (float)xboxController->xboxNotif.trigRT / XboxControllerNotificationParser::maxTrig;
 }
