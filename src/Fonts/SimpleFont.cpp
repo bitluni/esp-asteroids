@@ -143,6 +143,7 @@ SimpleFont::SimpleFont()
   characters['G'].commands.push_back({.coords = b2Vec2(0, 1), .draw = true});
   characters['G'].commands.push_back({.coords = b2Vec2(1, 1), .draw = true});
   characters['G'].commands.push_back({.coords = b2Vec2(1, 0.5), .draw = true});
+  characters['G'].commands.push_back({.coords = b2Vec2(0.5, 0.5), .draw = true});
 
   characters['A'].left_pos = 0;
   characters['A'].right_pos = 1.5;

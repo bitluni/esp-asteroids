@@ -27,7 +27,9 @@
 #include <Arduino.h>
 #include <M5Core2.h>
 //#include <M5Unified.h>
+#ifdef USE_XBOX_CONTROLLER
 #include <XboxSeriesXControllerESP32_asukiaaa.hpp>
+#endif
 
 #define WORLD_SIZE 30
 #define ROTARY_ENCODER_CLK_GPIO GPIO_NUM_19
@@ -61,7 +63,9 @@ void setup() {
   M5.begin(false, false, false, false, kMBusModeOutput, true);
   Serial.begin(115200);
   Serial.println("Starting NimBLE Client");
+#ifdef USE_XBOX_CONTROLLER
   xboxController.begin();
+#endif
 }
 void loop() {
   xboxController.onLoop();
@@ -94,10 +98,12 @@ void app_main()
 
   initArduino();
   setup();
+#ifdef USE_XBOX_CONTROLLER
   while(!xboxController.isConnected()) {
     loop();
     vTaskDelay(500 / portTICK_PERIOD_MS);
   }
+#endif
 
   esp_vfs_spiffs_conf_t conf = {
       .base_path = "/spiffs",
@@ -138,6 +144,9 @@ void app_main()
   ESP_LOGI(TAG, "Free ram after SoundFX %d", free_ram);
 
   ESP_LOGI(TAG, "Creating controls");
+#ifdef USE_XBOX_CONTROLLER
+  XboxControls *controls = new XboxControls(&xboxController);
+#else
   // MagneticRotaryEncoder *rotary_encoder = new MagneticRotaryEncoder(
   //     MAGNETIC_ROTARY_ENCODER_CS_GPIO,
   //     MAGNETIC_ROTARY_ENCODER_CLK_GPIO,
@@ -154,8 +163,8 @@ void app_main()
   free_ram = esp_get_free_heap_size();
   ESP_LOGI(TAG, "Free ram after Button %d", free_ram);
 
-//  ESP32Controls *controls = new ESP32Controls(rotary_encoder, fire_button, thrust_button);
-  XboxControls *controls = new XboxControls(&xboxController);
+  ESP32Controls *controls = new ESP32Controls(rotary_encoder, fire_button, thrust_button);
+#endif
   ESP_LOGI(TAG, "Starting world");
   Game *game = new Game(WORLD_SIZE, controls, sound_fx);
 
@@ -180,14 +189,13 @@ void app_main()
   free_ram = esp_get_free_heap_size();
   ESP_LOGI(TAG, "Free ram after renderer %d", free_ram);
 
-  //wifi_init_sta();
-
   volatile int rendered_frames_old=renderer->rendered_frames;
   volatile int transactions_old=renderer->transactions;
   while (true)
   {
+#ifdef USE_XBOX_CONTROLLER
     loop();
-
+#endif
 
     vTaskDelay(1000/*500*/ / portTICK_PERIOD_MS);
     ESP_LOGI(TAG, "World steps %d, FPS %d, PPS %d, Free RAM %d",
