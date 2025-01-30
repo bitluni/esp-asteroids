@@ -56,9 +56,10 @@ GAME_STATE PlayingState::handle(Game *game, float elapsed_time)
     // upate the angle of the ship
     game->get_ship()->setAngle(game->get_controls()->get_direction());
     // is the user pushing the thrust button?
-    if (game->get_controls()->is_thrusting())
+    float thrust = game->get_controls()->is_thrusting();
+    if (thrust>0.0f)
     {
-      game->get_ship()->thrust(250 * elapsed_time);
+      game->get_ship()->thrust(250 * elapsed_time * thrust);
       if (thrust_sound_cooldown <= 0)
       {
         game->get_sound_fx()->thrust();

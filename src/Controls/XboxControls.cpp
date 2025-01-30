@@ -16,9 +16,9 @@ bool XboxControls::is_firing()
   return xboxController->xboxNotif.btnA;
 }
 
-bool XboxControls::is_thrusting()
+float XboxControls::is_thrusting()
 {
-  return xboxController->xboxNotif.btnB;
+  return (float)xboxController->xboxNotif.trigRT / XboxControllerNotificationParser::maxTrig;
 }
 
 float XboxControls::get_direction()

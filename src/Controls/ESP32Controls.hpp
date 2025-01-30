@@ -16,7 +16,7 @@ private:
 public:
   ESP32Controls(RotaryEncoder *rotary_encoder, MyButton *fire_button, MyButton *thrust_button);
   bool is_firing();
-  bool is_thrusting();
+  float is_thrusting();
   float get_direction();
 };
 
