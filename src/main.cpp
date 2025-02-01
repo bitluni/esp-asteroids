@@ -13,10 +13,10 @@
 #include "Rendering/SPIRenderer.h"
 #include "Game/GameLoop.h"
 #include "Game/Game.hpp"
-#include "Controls/MechanicalRotaryEncoder.hpp"
+/*#include "Controls/MechanicalRotaryEncoder.hpp"
 // #include "Controls/MagneticRotaryEncoder.hpp"
 #include "Controls/MyButton.hpp"
-#include "Controls/ESP32Controls.hpp"
+#include "Controls/ESP32Controls.hpp"*/
 #include "Controls/XboxControls.hpp"
 #include "Audio/I2SOutput.h"
 #include "Audio/WAVFile.h"
@@ -27,11 +27,10 @@
 #include <Arduino.h>
 #include <M5Core2.h>
 //#include <M5Unified.h>
-#ifdef USE_XBOX_CONTROLLER
-#include <XboxSeriesXControllerESP32_asukiaaa.hpp>
-#endif
 
 #define WORLD_SIZE 30
+
+#ifdef ESP32_Controls_hpp
 #define ROTARY_ENCODER_CLK_GPIO GPIO_NUM_19
 #define ROTARY_ENCODER_DI_GPIO GPIO_NUM_18
 
@@ -44,6 +43,7 @@
 // if using the heltec renderer switch to another pin.
 #define FIRE_GPIO GPIO_NUM_15
 #define THRUST_GPIO GPIO_NUM_4
+#endif
 
 extern "C"
 {
@@ -53,57 +53,19 @@ extern "C"
 static const char *TAG = "APP";
 
 
-// Required to replace with your xbox address
-//XboxSeriesXControllerESP32_asukiaaa::Core xboxController("40:8e:2c:b8:34:d5");
-// any xbox controller
-XboxSeriesXControllerESP32_asukiaaa::Core xboxController;
-
-
 void setup() {
   M5.begin(false, false, false, false, kMBusModeOutput, true);
   Serial.begin(115200);
-  Serial.println("Starting NimBLE Client");
-#ifdef USE_XBOX_CONTROLLER
-  xboxController.begin();
-#endif
-}
-void loop() {
-  xboxController.onLoop();
-  if (xboxController.isConnected()) {
-    if (xboxController.isWaitingForFirstNotification()) {
-      ESP_LOGI(TAG, "waiting for first notification");
-    } else {
-      /*Serial.println("Address: " + xboxController.buildDeviceAddressStr());
-      Serial.print(xboxController.xboxNotif.toString());
-      unsigned long receivedAt = xboxController.getReceiveNotificationAt();
-      uint16_t joystickMax = XboxControllerNotificationParser::maxJoy;
-      Serial.print("joyLHori rate: ");
-      Serial.println((float)xboxController.xboxNotif.joyLHori / joystickMax);
-      Serial.print("joyLVert rate: ");
-      Serial.println((float)xboxController.xboxNotif.joyLVert / joystickMax);
-      Serial.println("battery " + String(xboxController.battery) + "%");
-      Serial.println("received at " + String(receivedAt));*/
-    }
-  } else {
-    ESP_LOGI(TAG, "not connected");
-    if (xboxController.getCountFailedConnection() > 2) {
-      ESP.restart();
-    }
-  }
 }
 void app_main()
 {
   vTaskDelay(2000 / portTICK_PERIOD_MS);
   ESP_LOGI(TAG, "Started UP");
 
+
   initArduino();
   setup();
-#ifdef USE_XBOX_CONTROLLER
-  while(!xboxController.isConnected()) {
-    loop();
-    vTaskDelay(500 / portTICK_PERIOD_MS);
-  }
-#endif
+
 
   esp_vfs_spiffs_conf_t conf = {
       .base_path = "/spiffs",
@@ -144,8 +106,8 @@ void app_main()
   ESP_LOGI(TAG, "Free ram after SoundFX %d", free_ram);
 
   ESP_LOGI(TAG, "Creating controls");
-#ifdef USE_XBOX_CONTROLLER
-  XboxControls *controls = new XboxControls(&xboxController);
+#ifdef Xbox_Controls_hpp
+  XboxControls *controls = new XboxControls();
 #else
   // MagneticRotaryEncoder *rotary_encoder = new MagneticRotaryEncoder(
   //     MAGNETIC_ROTARY_ENCODER_CS_GPIO,
@@ -193,15 +155,10 @@ void app_main()
   volatile int transactions_old=renderer->transactions;
   while (true)
   {
-#ifdef USE_XBOX_CONTROLLER
-    loop();
-#endif
-
-    vTaskDelay(1000/*500*/ / portTICK_PERIOD_MS);
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
     ESP_LOGI(TAG, "World steps %d, FPS %d, PPS %d, Free RAM %d",
              game_loop->steps,
              renderer->rendered_frames-rendered_frames_old,// / (end - start),
-//             renderer->transactions,
              renderer->transactions-transactions_old,// / (end - start),
              esp_get_free_heap_size());
     rendered_frames_old=renderer->rendered_frames;

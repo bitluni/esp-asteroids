@@ -1,3 +1,6 @@
+// because it depends on NimBLE-Arduino, copied from
+// https://github.com/asukiaaa/arduino-XboxControllerNotificationParser/blob/master/src/XboxControllerNotificationParser.h
+
 #ifndef __XBOX_CONTROLLER_NOTIFICATION_PARSER_H__
 #define __XBOX_CONTROLLER_NOTIFICATION_PARSER_H__
 

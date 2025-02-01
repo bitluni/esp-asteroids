@@ -1,3 +1,6 @@
+// because it depends on NimBLE-Arduino, copied from
+// https://github.com/asukiaaa/arduino-XboxControllerNotificationParser/blob/master/src/XboxControllerNotificationParser.cpp
+
 #include "XboxControllerNotificationParser.h"
 
 #define XBOX_CONTROLLER_INDEX_BUTTONS_DIR 12

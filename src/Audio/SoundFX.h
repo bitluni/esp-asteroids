@@ -14,11 +14,8 @@ class SoundFX
 
 public:
   SoundFX(I2SOutput *output);
-#ifdef USE_XBOX_CONTROLLER
   void fire(float volume_adjust = 1.0f);
-#else
-  void fire(float volume_adjust = 0.0f);
-#endif
+//  void fire(float volume_adjust = 0.0f);
   void thrust(float volume_adjust = 1.0f);
   void bang_large(float volume_adjust = 1.0f);
   void bang_medium(float volume_adjust = 1.0f);

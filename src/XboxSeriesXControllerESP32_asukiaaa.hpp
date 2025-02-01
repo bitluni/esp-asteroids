@@ -1,3 +1,6 @@
+// because it depends on NimBLE-Arduino, copied from
+// https://github.com/asukiaaa/arduino-XboxSeriesXControllerESP32/blob/main/src/XboxSeriesXControllerESP32_asukiaaa.hpp
+
 #pragma once
 
 #include <NimBLEDevice.h>
@@ -96,7 +99,7 @@ class ScanCallbacks : public NimBLEScanCallbacks {
   NimBLEAddress* targetDeviceAddress = nullptr;
   ConnectionState* pConnectionState;
   void onResult(const NimBLEAdvertisedDevice* advertisedDevice) override {
-#ifdef XBOX_SERIES_X_CONTROLLER_DEBUG_SERIAL
+#ifdef _XBOX_SERIES_X_CONTROLLER_DEBUG_SERIAL_
     XBOX_SERIES_X_CONTROLLER_DEBUG_SERIAL.print("Advertised Device found: ");
     XBOX_SERIES_X_CONTROLLER_DEBUG_SERIAL.println(
         advertisedDevice->toString().c_str());
@@ -162,6 +165,11 @@ class Core {
   }
 
   void writeHIDReport(uint8_t* dataArr, size_t dataLen) {
+#ifdef XBOX_SERIES_X_CONTROLLER_DEBUG_SERIAL
+    XBOX_SERIES_X_CONTROLLER_DEBUG_SERIAL.printf("pConnectedClient=%x  connectionState=%d\n", pConnectedClient, connectionState);
+    // Guru Meditation Error: Core  0 panic'ed (LoadProhibited). Exception was unhandled.
+    // XBOX_SERIES_X_CONTROLLER_DEBUG_SERIAL.printf("pConnectedClient=%x  connectionState=%d  advDevice=%s\n", pConnectedClient, connectionState, advDevice->toString().c_str());
+#endif
     if (pConnectedClient == nullptr) {
 #ifdef XBOX_SERIES_X_CONTROLLER_DEBUG_SERIAL
       XBOX_SERIES_X_CONTROLLER_DEBUG_SERIAL.println("no connnected client");
@@ -262,7 +270,7 @@ class Core {
   unsigned long receivedNotificationAt = 0;
   uint32_t msScanTime = 4000; /** 0 = scan forever */
   uint8_t countFailedConnection = 0;
-  uint8_t retryCountInOneConnection = 3;
+  uint8_t retryCountInOneConnection = /*3*/0;
   unsigned long retryIntervalMs = 100;
   NimBLEClient* pClient = nullptr;
 

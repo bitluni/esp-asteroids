@@ -38,6 +38,7 @@ GAME_STATE PlayingState::handle(Game *game, float elapsed_time)
     game->destroy_player_ship();
     game->set_lives(game->get_lives() - 1);
     game->get_sound_fx()->bang_large();
+    game->get_controls()->shake();
     if (game->get_lives() == 0)
     {
       ESP_LOGI(TAG, "Switching to GAME over state");

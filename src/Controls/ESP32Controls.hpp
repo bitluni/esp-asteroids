@@ -18,6 +18,7 @@ public:
   bool is_firing();
   float get_thrust();
   float get_direction();
+  void shake();
 };
 
 #endif

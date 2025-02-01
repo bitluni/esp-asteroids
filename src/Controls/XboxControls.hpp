@@ -4,18 +4,21 @@
 #include <XboxSeriesXControllerESP32_asukiaaa.hpp>
 #include "Controls.hpp"
 
-//class XboxSeriesXControllerESP32_asukiaaa::Core;
-
 class XboxControls : public Controls
 {
 private:
-  XboxSeriesXControllerESP32_asukiaaa::Core *xboxController;
+// Required to replace with your xbox address
+//XboxSeriesXControllerESP32_asukiaaa::Core xboxController("40:8e:2c:b8:34:d5");
+// any xbox controller
+  XboxSeriesXControllerESP32_asukiaaa::Core xboxController;
+//  XboxSeriesXHIDReportBuilder_asukiaaa::ReportBase *repo;
 
 public:
-  XboxControls(XboxSeriesXControllerESP32_asukiaaa::Core *xboxController);
+  XboxControls();
   bool is_firing();
   float get_thrust();
   float get_direction();
+  void shake();
 };
 
 #endif

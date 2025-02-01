@@ -13,6 +13,7 @@ public:
     virtual bool is_firing() = 0;
     virtual float get_thrust() = 0;
     virtual float get_direction() = 0;
+    virtual void shake();
 };
 
 #endif /* Controls_hpp */

@@ -1,3 +1,6 @@
+// because it depends on NimBLE-Arduino, copied from
+// https://github.com/asukiaaa/arduino-XboxSeriesXHIDReportBuilder/blob/main/src/XboxSeriesXHIDReportBuilder_asukiaaa.hpp
+
 #pragma once
 
 namespace XboxSeriesXHIDReportBuilder_asukiaaa {
