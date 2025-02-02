@@ -1,3 +1,12 @@
 [submodule "lib/box2d"]
 	path = lib/box2d
 	url = https://github.com/erincatto/box2d.git
+[submodule "lib/arduino-XboxControllerNotificationParser"]
+	path = lib/arduino-XboxControllerNotificationParser
+	url = https://github.com/asukiaaa/arduino-XboxControllerNotificationParser
+[submodule "lib/arduino-XboxSeriesXHIDReportBuilder"]
+	path = lib/arduino-XboxSeriesXHIDReportBuilder
+	url = https://github.com/asukiaaa/arduino-XboxSeriesXHIDReportBuilder
+[submodule "lib/arduino-XboxSeriesXControllerESP32"]
+	path = lib/arduino-XboxSeriesXControllerESP32
+	url = https://github.com/sonic74/arduino-XboxSeriesXControllerESP32

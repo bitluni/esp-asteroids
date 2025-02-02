@@ -43,9 +43,9 @@ else
     uint8_t output_y = instruction.x;
     uint8_t output_x = instruction.y;
     hold = instruction.hold;
-    if(output_x != output_x_old || output_y != output_y_old) {
+/*    if(output_x != output_x_old || output_y != output_y_old) {
       output_x_old=output_x;
-      output_y_old=output_y;
+      output_y_old=output_y;*/
 //    output_x=output_y=ramp++%256;
 /*      wav[0]=0;
       wav[1]=output_x;
@@ -54,13 +54,16 @@ else
       wav[4]=0;
       wav[5]=output_x;
       wav[6]=0;
-      wav[7]=output_y;
-*/for(uint8_t i=0; i<sizeof(wav); i+=2 ) {
+      wav[7]=output_y;*/
+for(uint8_t i=0; i<sizeof(wav); i+=2 ) {
   wav[i  ]=output_x;
   wav[i+1]=output_y;
 }
-      changed=true;
-    }
+// Guru Meditation Error: Core  1 panic'ed (Interrupt wdt timeout on CPU1). 
+/*size_t bytes_written;
+ESP_ERROR_CHECK(i2s_write_expand(I2S_NUM_0, wav, sizeof(wav), I2S_BITS_PER_SAMPLE_8BIT, I2S_BITS_PER_SAMPLE_16BIT, &bytes_written, portMAX_DELAY));*/
+/*      changed=true;
+    }*/
     draw_position++;
     transactions++;
   }
@@ -101,13 +104,13 @@ void /*IRAM_ATTR*/ dma_dac_timer_setup(void *param)
   while (true)
   {
 
-     if(changed) {
-      changed=false;
+//     if(changed) {
+//      changed=false;
       size_t bytes_written;
 /*      ESP_ERROR_CHECK(i2s_write(I2S_NUM_0, wav, sizeof(wav), &bytes_written, portMAX_DELAY));
       ESP_ERROR_CHECK(i2s_write(I2S_NUM_0, wav, sizeof(wav), &bytes_written, portMAX_DELAY));*/
       ESP_ERROR_CHECK(i2s_write_expand(I2S_NUM_0, wav, sizeof(wav), I2S_BITS_PER_SAMPLE_8BIT, I2S_BITS_PER_SAMPLE_16BIT, &bytes_written, portMAX_DELAY));
-     }
+//     }
     vTaskDelay(1/*0000000*/);
   }
 }
@@ -142,6 +145,8 @@ static const i2s_config_t i2s_config = {
     .tx_desc_auto_clear = false
 };
 
+     // ESP_ERR_INVALID_STATE
+     i2s_driver_uninstall(I2S_NUM_0);
      //install and start i2s driver
      ESP_ERROR_CHECK(i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL));
      ESP_ERROR_CHECK(i2s_set_pin(I2S_NUM_0, NULL)); //for internal DAC, this will enable both of the internal channels

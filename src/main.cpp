@@ -1,3 +1,11 @@
+/*
+xTaskCreatePinnedToCore:
+<port_common>: "main", 0
+//MagneticRotaryEncoder: "Rotary Encoder Task", 0
+GameLoop: "Game Loop", 0
+:Renderer: "Draw Task", 1
+*/
+
 #include <stdio.h>
 #include "nvs_flash.h"
 #include "freertos/FreeRTOS.h"
@@ -13,11 +21,13 @@
 #include "Rendering/SPIRenderer.h"
 #include "Game/GameLoop.h"
 #include "Game/Game.hpp"
+
 /*#include "Controls/MechanicalRotaryEncoder.hpp"
 // #include "Controls/MagneticRotaryEncoder.hpp"
 #include "Controls/MyButton.hpp"
 #include "Controls/ESP32Controls.hpp"*/
 #include "Controls/XboxControls.hpp"
+
 #include "Audio/I2SOutput.h"
 #include "Audio/WAVFile.h"
 #include "Audio/SoundFX.h"
@@ -96,7 +106,10 @@ void app_main()
 
   ESP_LOGI(TAG, "Starting audio");
   I2SOutput *i2sOutput = new I2SOutput();
+// silent debugging
+#ifdef Xbox_Controls_hpp
   i2sOutput->start();
+#endif
 
   free_ram = esp_get_free_heap_size();
   ESP_LOGI(TAG, "Free ram after I2SOutput %d", free_ram);
