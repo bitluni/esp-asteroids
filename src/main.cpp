@@ -121,6 +121,7 @@ void app_main()
   ESP_LOGI(TAG, "Creating controls");
 #ifdef Xbox_Controls_hpp
   XboxControls *controls = new XboxControls();
+  //XboxControls *controls2 = new XboxControls();
 #else
   // MagneticRotaryEncoder *rotary_encoder = new MagneticRotaryEncoder(
   //     MAGNETIC_ROTARY_ENCODER_CS_GPIO,

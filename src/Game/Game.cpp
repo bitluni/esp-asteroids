@@ -290,7 +290,7 @@ void Game::process_asteroids()
 
 void Game::step_world(float elapsedTime)
 {
-    // reset the ship hit flat
+    // reset the ship hit flag
     _is_ship_hit = false;
     // reset the asteroids collided flag
     _did_asteroids_collide = false;

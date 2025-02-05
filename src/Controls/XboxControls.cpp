@@ -1,7 +1,5 @@
 #include "XboxControls.hpp"
 
-#include <cmath>
-
 static const char *TAG = "XboxControls";
 
 XboxControls::XboxControls()
@@ -58,7 +56,7 @@ float XboxControls::get_direction()
   float y=(float)xboxController.xboxNotif.joyLVert / XboxControllerNotificationParser::maxJoy*2.0f-1.0f;
 //  ESP_LOGI(TAG, "%f,%f", x, y);
 // https://chatgpt.com/share/67999632-7a44-8002-9df6-3d2d1958b8b9
-    float angleRad = std::atan2(x, -y);  // Get angle in radians
+    float angleRad = atan2(x, -y);  // Get angle in radians
     return angleRad;
 }
 
