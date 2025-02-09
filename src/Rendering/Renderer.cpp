@@ -5,9 +5,10 @@
 #ifdef PWM
 #include "driver/ledc.h"
 #define LEDC_DUTY               (  0)
-//#define LEDC_DUTY               (1) // unsharp (?)
-//#define LEDC_DUTY_OFF           (255) // Set duty to 100%. (2 ** 8 = 256) * 100% = 256 - 1 for PWM
-#define LEDC_DUTY_OFF           (15) // Set duty to 100%. (2 ** 4 = 16) * 100% = 16 - 1 for PWM
+//#define LEDC_DUTY               (223) // fuzzy (?)
+//#define LEDC_DUTY               (13) // fuzzy (?)
+#define LEDC_DUTY_OFF           (255) // Set duty to 100%. (2 ** 8 = 256) * 100% = 256 - 1 for PWM
+//#define LEDC_DUTY_OFF           (15) // Set duty to 100%. (2 ** 4 = 16) * 100% = 16 - 1 for PWM
 #define LEDC_TIMER              LEDC_TIMER_0
 #define LEDC_MODE               LEDC_HIGH_SPEED_MODE
 #define LEDC_CHANNEL            LEDC_CHANNEL_0
@@ -29,11 +30,11 @@ void Renderer::start()
   // Prepare and then apply the LEDC PWM timer configuration
   ledc_timer_config_t ledc_timer = {
       .speed_mode       = LEDC_MODE,
-//      .duty_resolution  = LEDC_TIMER_8_BIT,
-      .duty_resolution  = LEDC_TIMER_4_BIT,
+      .duty_resolution  = LEDC_TIMER_8_BIT,
+//      .duty_resolution  = LEDC_TIMER_4_BIT,
       .timer_num        = LEDC_TIMER,
-//      .freq_hz          = (100*1000),
-      .freq_hz          = (1000*1000),
+      .freq_hz          = (100*1000),
+//      .freq_hz          = (1000*1000),
       .clk_cfg          = LEDC_AUTO_CLK
   };
   ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer));
