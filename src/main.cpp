@@ -31,8 +31,8 @@ GameLoop: "Game Loop", 0
 #include "Audio/I2SOutput.h"
 #include "Audio/WAVFile.h"
 #include "Audio/SoundFX.h"
-// #include "Fonts/HersheyFont.hpp"
-#include "Fonts/SimpleFont.hpp"
+#include "Fonts/HersheyFont.hpp"
+//#include "Fonts/SimpleFont.hpp"
 
 #include <Arduino.h>
 #include <M5Core2.h>
@@ -145,9 +145,9 @@ void app_main()
   Game *game = new Game(WORLD_SIZE, controls, sound_fx);
 
   ESP_LOGI(TAG, "Loading font");
-  //HersheyFont *font = new HersheyFont();
-  //font->read_from_file("/spiffs/futural.jhf");
-  SimpleFont *font = new SimpleFont();
+  HersheyFont *font = new HersheyFont();
+  font->read_from_file("/spiffs/futural.jhf");
+  //SimpleFont *font = new SimpleFont();
 
   ESP_LOGI(TAG, "Starting renderer");
    Renderer *renderer = new DACRenderer(WORLD_SIZE, font);
@@ -165,16 +165,18 @@ void app_main()
   free_ram = esp_get_free_heap_size();
   ESP_LOGI(TAG, "Free ram after renderer %d", free_ram);
 
+  volatile int steps_old=game_loop->steps;
   volatile int rendered_frames_old=renderer->rendered_frames;
   volatile int transactions_old=renderer->transactions;
   while (true)
   {
     vTaskDelay(1000 / portTICK_PERIOD_MS);
-    ESP_LOGI(TAG, "World steps %d, FPS %d, PPS %d, Free RAM %d",
-             game_loop->steps,
-             renderer->rendered_frames-rendered_frames_old,// / (end - start),
-             renderer->transactions-transactions_old,// / (end - start),
-             esp_get_free_heap_size());
+    ESP_LOGI(TAG, "World steps/s %d, FPS %d, PPS %d, Free RAM %d KB",
+             game_loop->steps-steps_old,
+             renderer->rendered_frames-rendered_frames_old,
+             renderer->transactions-transactions_old,
+             esp_get_free_heap_size()/1024);
+    steps_old=game_loop->steps;
     rendered_frames_old=renderer->rendered_frames;
     transactions_old=renderer->transactions;
   }

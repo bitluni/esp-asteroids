@@ -31,7 +31,7 @@ int hersheyCharToNumber(char c)
 
 const char *skip_newlines(const char *data)
 {
-  while (*data == '\n')
+  while (*data == '\r' || *data == '\n')
   {
     data++;
   }

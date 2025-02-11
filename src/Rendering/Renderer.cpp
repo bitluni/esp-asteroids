@@ -5,7 +5,7 @@
 #ifdef PWM
 #include "driver/ledc.h"
 #define LEDC_DUTY               (  0)
-//#define LEDC_DUTY               (223) // fuzzy (?)
+//#define LEDC_DUTY               (127) // fuzzy (?)
 //#define LEDC_DUTY               (13) // fuzzy (?)
 #define LEDC_DUTY_OFF           (255) // Set duty to 100%. (2 ** 8 = 256) * 100% = 256 - 1 for PWM
 //#define LEDC_DUTY_OFF           (15) // Set duty to 100%. (2 ** 4 = 16) * 100% = 16 - 1 for PWM

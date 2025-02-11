@@ -121,7 +121,7 @@ SimpleFont::SimpleFont()
   characters['E'].commands.push_back({.coords = b2Vec2(0, 1), .draw = true});
   characters['E'].commands.push_back({.coords = b2Vec2(0, 0), .draw = true});
   characters['E'].commands.push_back({.coords = b2Vec2(1, 0), .draw = true});
-  characters['E'].commands.push_back({.coords = b2Vec2(1, 0.5), .draw = false});
+  characters['E'].commands.push_back({.coords = b2Vec2(0.5, 0.5), .draw = false});
   characters['E'].commands.push_back({.coords = b2Vec2(0, 0.5), .draw = true});
 
   characters['P'].left_pos = 0;
@@ -149,11 +149,10 @@ SimpleFont::SimpleFont()
   characters['A'].right_pos = 1.5;
 
   characters['A'].commands.push_back({.coords = b2Vec2(0, 1), .draw = false});
-  characters['A'].commands.push_back({.coords = b2Vec2(0, 0), .draw = true});
-  characters['A'].commands.push_back({.coords = b2Vec2(1, 0), .draw = true});
+  characters['A'].commands.push_back({.coords = b2Vec2(0.5, 0), .draw = true});
   characters['A'].commands.push_back({.coords = b2Vec2(1, 1), .draw = true});
-  characters['A'].commands.push_back({.coords = b2Vec2(1, 0.5), .draw = false});
-  characters['A'].commands.push_back({.coords = b2Vec2(0, 0.5), .draw = true});
+  characters['A'].commands.push_back({.coords = b2Vec2(0.75, 0.5), .draw = false});
+  characters['A'].commands.push_back({.coords = b2Vec2(0.25, 0.5), .draw = true});
 
   characters['M'].left_pos = 0;
   characters['M'].right_pos = 1.5;
