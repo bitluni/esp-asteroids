@@ -18,7 +18,7 @@ public:
   {
     if (is_respawning)
     {
-      return "PRESS FIRE";
+      return "PRESS FIRE!";
     }
     return nullptr;
   }

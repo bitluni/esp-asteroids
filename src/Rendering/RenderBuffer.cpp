@@ -127,7 +127,7 @@ void RenderBuffer::render_if_needed(Game *game)
         if (game->show_score())
         {
             char tmp[100];
-            sprintf(tmp, "%03d", game->get_score());
+            sprintf(tmp, "%3d", game->get_score());
             cur = draw_text(cur, -30, -28, tmp, false);
         }
         std::list<GameObject *> objects_to_draw(game->getObjects());

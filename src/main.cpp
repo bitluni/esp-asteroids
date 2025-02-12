@@ -150,10 +150,10 @@ void app_main()
   //SimpleFont *font = new SimpleFont();
 
   ESP_LOGI(TAG, "Starting renderer");
-   Renderer *renderer = new DACRenderer(WORLD_SIZE, font);
+//   Renderer *renderer = new DACRenderer(WORLD_SIZE, font);
 //   Renderer *renderer = new DMADACRenderer(WORLD_SIZE, font);
   // Renderer *renderer = new HeltecOLEDRenderer(WORLD_SIZE, font);
-//  Renderer *renderer = new SPIRenderer(WORLD_SIZE, font);
+  Renderer *renderer = new SPIRenderer(WORLD_SIZE, font);
   renderer->start();
 
   GameLoop *game_loop = new GameLoop(game, renderer->get_render_buffer());

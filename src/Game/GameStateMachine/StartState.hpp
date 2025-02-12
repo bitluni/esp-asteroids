@@ -10,6 +10,6 @@ public:
   void exit(Game *game);
   virtual const char *get_text()
   {
-    return "PRESS FIRE";
+    return "PRESS FIRE!";
   }
 };
