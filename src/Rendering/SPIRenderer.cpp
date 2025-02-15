@@ -137,7 +137,7 @@ void SPIRenderer::start()
       .address_bits = 0, ///< Default amount of bits in address phase (0-64), used when ``SPI_TRANS_VARIABLE_ADDR`` is not used, otherwise ignored.
       .dummy_bits = 0,   ///< Amount of dummy bits to insert between address and data phase
       .mode = 0,         //SPI mode 0
-      .clock_speed_hz = SPI_MASTER_FREQ_8M, // 20002249B.pdf SPI_MASTER_FREQ_20M
+      .clock_speed_hz = SPI_MASTER_FREQ_8M, // 20002249B.pdf <= SPI_MASTER_FREQ_20M
       .spics_io_num = PIN_NUM_CS, //CS pin
       .flags = SPI_DEVICE_NO_DUMMY,
       .queue_size = 2, //We want to be able to queue 2 transactions at a time
