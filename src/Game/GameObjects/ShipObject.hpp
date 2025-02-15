@@ -10,7 +10,7 @@ private:
   bool is_thrusting;
 
 public:
-  ShipObject(b2World *world, const b2Vec2 *shipPoints, int numShipPoints, const b2Vec2 *shipThrustPoints, int numShipThrustPoints, b2Vec2 position, float angle, float scale, b2Vec2 velocity, float angularVelocity);
+  ShipObject(b2World *world, const b2Vec2 *shipPoints, int numShipPoints, const b2Vec2 *shipThrustPoints, int numShipThrustPoints, b2Vec2 position, float angle, float scale, b2Vec2 velocity, float angularVelocity, int player);
   b2Vec2 *getPoints();
   int getNumPoints();
   void set_is_thrusting(bool is_thrusting)

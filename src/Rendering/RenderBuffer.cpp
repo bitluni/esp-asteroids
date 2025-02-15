@@ -124,7 +124,7 @@ void RenderBuffer::render_if_needed(Game *game)
         // start from the top left corner
         b2Vec2 cur(-30, -30);
         // score
-        if (game->show_score())
+        if (game->show_scores())
         {
             char tmp[100];
             sprintf(tmp, "%3d", game->get_score());

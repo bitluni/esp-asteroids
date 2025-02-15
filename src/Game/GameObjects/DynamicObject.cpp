@@ -1,7 +1,7 @@
 #include "DynamicObject.hpp"
 
-DynamicObject::DynamicObject(b2World *world, GAME_OBJECTS objectType, const b2Vec2 *points, int numPoints, b2Vec2 position, float angle, float scale, b2Vec2 velocity, float angularVelocity)
-    : GameObject(objectType, points, numPoints, position, angle, scale)
+DynamicObject::DynamicObject(b2World *world, GAME_OBJECTS objectType, const b2Vec2 *points, int numPoints, b2Vec2 position, float angle, float scale, b2Vec2 velocity, float angularVelocity, int player)
+    : GameObject(objectType, points, numPoints, position, angle, scale, player)
 {
   // create the body
   this->world = world;

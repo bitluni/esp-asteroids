@@ -26,11 +26,16 @@
 
 static const char *TAG = "game";
 
-Game::Game(float size, Controls *controls, SoundFX *sound_fx)
+Game::Game(float size, std::vector<Controls *> controls, SoundFX *sound_fx)
 {
     this->size = size;
     this->sound_fx = sound_fx;
     this->controls = controls;
+    players=controls.size();
+    for(int player=0; player<players; player++) {
+        ships.push_back(nullptr);
+        _is_ship_hit.push_back(false);
+    }
     this->current_game_state = GAME_STATE_START;
 //    this->current_game_state = GAME_STATE_PLAYING;
     // no gravity in our world
@@ -54,9 +59,11 @@ void Game::start_new_game()
     // clear down the current game state
     reset();
     add_asteroids();
-    add_player_ship();
-    add_lives();
-    set_score(0);
+    for(int player=0; player<players; player++) {
+        add_player_ship(player);
+        add_lives(player);
+        set_score(0, player);
+    }
 }
 
 void Game::reset()
@@ -72,44 +79,40 @@ void Game::reset()
     bullets.clear();
     deadBullets.clear();
     lives_indicators.clear();
-    ship = nullptr;
+    for(int player=0; player<players; player++) {
+        ships.at(player)=nullptr;
+        _is_ship_hit.at(player)=false;
+    }
     score = 0;
     lives = 3;
-    _is_ship_hit = false;
     _did_asteroids_collide = false;
     asteroid_speed = ASTEROID_INITIAL_SPEED;
 }
 
-void Game::add_player_ship()
+void Game::add_player_ship(int player)
 {
-    ship = new ShipObject(world, shipPoints, shipPointsCount, shipThrustPoints, shipThrustPointsCount, b2Vec2(0, 0), 0, 5, b2Vec2(0, 0), 0);
-    objects.push_back(ship);
+    ships.at(player) = new ShipObject(world, shipPoints, shipPointsCount, shipThrustPoints, shipThrustPointsCount, b2Vec2(size/2-size/(players+1)*(player+1), 0), 0, 5, b2Vec2(0, 0), 0, player);
+    objects.push_back(ships[player]);
 }
 
-void Game::destroy_player_ship()
+void Game::destroy_player_ship(int player)
 {
-    objects.remove(ship);
-    delete (ship);
-    ship = nullptr;
+    objects.remove(ships[player]);
+    delete (ships[player]);
+    ships.at(player) = nullptr;
 }
 
-void Game::add_lives()
+void Game::add_lives(int player)
 {
     // the three lives
-    auto life_indicator = new GameObject(HUD, shipPoints, shipPointsCount, b2Vec2(size - 1.5, -size + 1.5), 0, 3);
-    lives_indicators.push_back(life_indicator);
-    objects.push_back(life_indicator);
-
-    life_indicator = new GameObject(HUD, shipPoints, shipPointsCount, b2Vec2(size - 4, -size + 1.5), 0, 3);
-    lives_indicators.push_back(life_indicator);
-    objects.push_back(life_indicator);
-
-    life_indicator = new GameObject(HUD, shipPoints, shipPointsCount, b2Vec2(size - 6.5, -size + 1.5), 0, 3);
-    lives_indicators.push_back(life_indicator);
-    objects.push_back(life_indicator);
+    for(int i=0; i<3; i++) {
+        auto life_indicator = new GameObject(HUD, shipPoints, shipPointsCount, b2Vec2(size - 1.5 - (i+player*3)*2.5, -size + 1.5), 0, 3);
+        lives_indicators.push_back(life_indicator);
+        objects.push_back(life_indicator);
+    }
 }
 
-void Game::set_lives(int new_value)
+void Game::set_lives(int new_value, int player)
 {
     ESP_LOGI(TAG, "Setting lives to %d from %d", new_value, lives_indicators.size());
 
@@ -124,12 +127,12 @@ void Game::set_lives(int new_value)
     }
 }
 
-void Game::set_score(int new_score)
+void Game::set_score(int new_score, int player)
 {
     this->score = new_score;
 }
 
-bool Game::can_add_bullet()
+bool Game::can_add_bullet(int player)
 {
     return bullets.size() < MAX_BULLETS_INFLIGHT;
 }
@@ -147,9 +150,9 @@ bool Game::has_asteroids()
     return false;
 }
 
-void Game::reset_player_ship()
+void Game::reset_player_ship(int player)
 {
-    ship->setPosition(b2Vec2(0, 0));
+    ships[player]->setPosition(b2Vec2(0, 0));
 }
 
 void Game::add_asteroids()
@@ -162,10 +165,10 @@ void Game::add_asteroids()
     ESP_LOGI(TAG, "Created asteroid3");
 }
 
-void Game::add_bullet()
+void Game::add_bullet(int player)
 {
     // create a new bullet and add it to the game
-    DynamicObject *bullet = new DynamicObject(world, BULLET, bulletPoints, bulletPointsCount, ship->getPosition(), M_PI + ship->getAngle(), 1.5, -BULLET_SPEED * b2Vec2(cos(M_PI_2 + ship->getAngle()), sin(M_PI_2 + ship->getAngle())), 0);
+    DynamicObject *bullet = new DynamicObject(world, BULLET, bulletPoints, bulletPointsCount, ships[player]->getPosition(), M_PI + ships[player]->getAngle(), 1.5, -BULLET_SPEED * b2Vec2(cos(M_PI_2 + ships[player]->getAngle()), sin(M_PI_2 + ships[player]->getAngle())), 0);
 
     objects.push_back(bullet);
     bullets.push_back(bullet);
@@ -196,7 +199,7 @@ void Game::wrap_objects()
     }
 }
 
-void Game::process_bullets(float elapsed_time)
+void Game::process_bullets(float elapsed_time, int player)
 {
     // age bullets so that they dissappear
     for (auto bullet : bullets)
@@ -291,7 +294,7 @@ void Game::process_asteroids()
 void Game::step_world(float elapsedTime)
 {
     // reset the ship hit flag
-    _is_ship_hit = false;
+    for(int player=0; player<players; player++) _is_ship_hit.at(player)=false;
     // reset the asteroids collided flag
     _did_asteroids_collide = false;
     // step the world forward
@@ -351,10 +354,13 @@ void Game::BeginContact(b2Contact *contact)
         hitAsteroids.insert(objA);
     }
     // Asteroid and ship collision
-    if ((objA->getObjectType() == SHIP && objB->getObjectType() == ASTEROID) ||
-        (objA->getObjectType() == ASTEROID && objB->getObjectType() == SHIP))
+    if ((objA->getObjectType() == SHIP && objB->getObjectType() == ASTEROID))
     {
-        _is_ship_hit = true;
+        _is_ship_hit.at(objA->getPlayer())=true;
+    }
+    if ((objA->getObjectType() == ASTEROID && objB->getObjectType() == SHIP))
+    {
+        _is_ship_hit.at(objB->getPlayer())=true;
     }
 }
 

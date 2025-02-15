@@ -14,31 +14,39 @@ void PlayingState::enter(Game *game)
 {
   game->start_new_game();
   // clear our own state down
-  firing_cooldown = 0;
-  respawn_cooldown = 0;
-  thrust_sound_cooldown = 0;
+  firing_cooldown.clear();
+  respawn_cooldown.clear();
+  thrust_sound_cooldown.clear();
+  is_respawning.clear();
+  for(int player=0; player<game->players; player++) {
+    firing_cooldown.push_back(0);
+    respawn_cooldown.push_back(0);
+    thrust_sound_cooldown.push_back(0);
+    is_respawning.push_back(false);
+  }
 }
 
 GAME_STATE PlayingState::handle(Game *game, float elapsed_time)
 {
+for(int player=0; player<game->players; player++) {
   // handle respawn
-  if (is_respawning)
+  if (is_respawning[player])
   {
-    respawn_cooldown -= elapsed_time;
-    if (respawn_cooldown < 0 && game->get_controls()->is_firing())
+    respawn_cooldown.at(player) = respawn_cooldown[player]-elapsed_time;
+    if (respawn_cooldown[player] < 0 && game->get_controls(player)->is_firing())
     {
       ESP_LOGI(TAG, "Respawn");
-      is_respawning = false;
-      game->add_player_ship();
+      is_respawning.at(player) = false;
+      game->add_player_ship(player);
     }
   }
   // check to see if the ship has been hit
-  if (game->is_ship_hit())
+  if (game->is_ship_hit(player))
   {
-    game->destroy_player_ship();
+    game->destroy_player_ship(player);
     game->set_lives(game->get_lives() - 1);
     game->get_sound_fx()->bang_large();
-    game->get_controls()->shake();
+    game->get_controls(player)->shake();
     if (game->get_lives() == 0)
     {
       ESP_LOGI(TAG, "Switching to GAME over state");
@@ -47,45 +55,45 @@ GAME_STATE PlayingState::handle(Game *game, float elapsed_time)
     else
     {
       ESP_LOGI(TAG, "Allow respawn ship in 2 seconds");
-      respawn_cooldown = 2;
-      is_respawning = true;
+      respawn_cooldown.at(player) = 2;
+      is_respawning.at(player) = true;
     }
   }
-  auto ship = game->get_ship();
+  auto ship = game->get_ship(player);
   if (ship)
   {
     // upate the angle of the ship
-    game->get_ship()->setAngle(game->get_controls()->get_direction());
+    ship->setAngle(game->get_controls(player)->get_direction());
     // is the user pushing the thrust button?
-    float thrust = game->get_controls()->get_thrust();
+    float thrust = game->get_controls(player)->get_thrust();
     if (thrust>0.0f)
     {
-      game->get_ship()->thrust(250 * elapsed_time * thrust);
-      if (thrust_sound_cooldown <= 0)
+      ship->thrust(250 * elapsed_time * thrust);
+      if (thrust_sound_cooldown[player] <= 0)
       {
         game->get_sound_fx()->thrust(thrust);
-        thrust_sound_cooldown = 0.25;
+        thrust_sound_cooldown.at(player) = 0.25;
       }
       else
       {
-        thrust_sound_cooldown -= elapsed_time;
+        thrust_sound_cooldown.at(player) = thrust_sound_cooldown[player]-elapsed_time;
       }
-      game->get_ship()->set_is_thrusting(true);
+      ship->set_is_thrusting(true);
     }
     else
     {
-      game->get_ship()->set_is_thrusting(false);
+      ship->set_is_thrusting(false);
     }
     // handle the fire button
-    if (firing_cooldown > 0)
+    if (firing_cooldown.at(player) > 0)
     {
-      firing_cooldown -= elapsed_time;
+      firing_cooldown.at(player) = firing_cooldown[player]-elapsed_time;
     }
-    if (game->get_controls()->is_firing() && firing_cooldown <= 0 && game->can_add_bullet())
+    if (game->get_controls(player)->is_firing() && firing_cooldown[player] <= 0 && game->can_add_bullet(player))
     {
-      game->add_bullet();
+      game->add_bullet(player);
       // prevent firing for some time period
-      firing_cooldown = FIRE_COOLDOWN;
+      firing_cooldown.at(player) = FIRE_COOLDOWN;
       game->get_sound_fx()->fire();
     }
   }
@@ -93,9 +101,10 @@ GAME_STATE PlayingState::handle(Game *game, float elapsed_time)
   {
     game->increase_difficulty();
     // need to create new asteroids
-    game->reset_player_ship();
+    game->reset_player_ship(player);//!
     game->add_asteroids();
   }
+}
   return GAME_STATE_PLAYING;
 }
 

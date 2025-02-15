@@ -13,7 +13,7 @@ protected:
   b2World *world;
 
 public:
-  DynamicObject(b2World *world, GAME_OBJECTS objectType, const b2Vec2 *points, int numPoints, b2Vec2 position, float angle, float scale, b2Vec2 velocity, float angularVelocity);
+  DynamicObject(b2World *world, GAME_OBJECTS objectType, const b2Vec2 *points, int numPoints, b2Vec2 position, float angle, float scale, b2Vec2 velocity, float angularVelocity, int player=0);
   ~DynamicObject();
   b2Vec2 getPosition();
   float getAngle();

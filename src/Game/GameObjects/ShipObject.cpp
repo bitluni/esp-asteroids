@@ -1,7 +1,7 @@
 #include "ShipObject.hpp"
 
-ShipObject::ShipObject(b2World *world, const b2Vec2 *shipPoints, int numShipPoints, const b2Vec2 *shipThrustPoints, int numShipThrustPoints, b2Vec2 position, float angle, float scale, b2Vec2 velocity, float angularVelocity)
-    : DynamicObject(world, SHIP, shipPoints, numShipPoints, position, angle, scale, velocity, angularVelocity)
+ShipObject::ShipObject(b2World *world, const b2Vec2 *shipPoints, int numShipPoints, const b2Vec2 *shipThrustPoints, int numShipThrustPoints, b2Vec2 position, float angle, float scale, b2Vec2 velocity, float angularVelocity, int player)
+    : DynamicObject(world, SHIP, shipPoints, numShipPoints, position, angle, scale, velocity, angularVelocity, player)
 {
   // thrusting ship
   this->thrust_points = (b2Vec2 *)malloc(sizeof(b2Vec2) * numShipThrustPoints);

@@ -7,7 +7,7 @@
 
 #include "GameObject.hpp"
 
-GameObject::GameObject(GAME_OBJECTS objectType, const b2Vec2 *points, int numPoints, b2Vec2 position, float angle, float scale)
+GameObject::GameObject(GAME_OBJECTS objectType, const b2Vec2 *points, int numPoints, b2Vec2 position, float angle, float scale, int player)
 {
     age = 0;
     this->objectType = objectType;
@@ -20,6 +20,7 @@ GameObject::GameObject(GAME_OBJECTS objectType, const b2Vec2 *points, int numPoi
         this->points[i].Set(points[i].x * scale, points[i].y * scale);
     }
     this->numPoints = numPoints;
+    this->player=0;
 }
 
 GameObject::~GameObject()

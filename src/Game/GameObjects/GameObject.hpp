@@ -26,9 +26,10 @@ protected:
     float age;
     b2Vec2 position;
     float angle;
+    int player;
 
 public:
-    GameObject(GAME_OBJECTS objectType, const b2Vec2 *points, int numPoints, b2Vec2 position, float angle, float scale);
+    GameObject(GAME_OBJECTS objectType, const b2Vec2 *points, int numPoints, b2Vec2 position, float angle, float scale, int player=0);
     virtual ~GameObject();
     GAME_OBJECTS getObjectType()
     {
@@ -49,6 +50,10 @@ public:
     float getAge()
     {
         return age;
+    }
+    int getPlayer()
+    {
+        return player;
     }
     virtual b2Vec2 getPosition();
     virtual float getAngle();

@@ -66,6 +66,10 @@ static const char *TAG = "APP";
 void setup() {
   M5.begin(false, false, false, false, kMBusModeOutput, true);
   Serial.begin(115200);
+  uint32_t Freq;
+  Freq = getCpuFrequencyMhz(); Serial.print("CPU frequency: "); Serial.print(Freq); Serial.println(" MHz");
+  Freq = getXtalFrequencyMhz(); Serial.print("Crystal frequency: "); Serial.print(Freq); Serial.println(" MHz");
+  Freq = getApbFrequency(); Serial.print("APB frequency: "); Serial.print(Freq); Serial.println(" Hz");
 }
 void app_main()
 {
@@ -119,9 +123,11 @@ void app_main()
   ESP_LOGI(TAG, "Free ram after SoundFX %d", free_ram);
 
   ESP_LOGI(TAG, "Creating controls");
+  std::vector<Controls *> controls;
 #ifdef Xbox_Controls_hpp
-  XboxControls *controls = new XboxControls();
-  //XboxControls *controls2 = new XboxControls();
+  //XboxControls *controls = new XboxControls();
+  controls.push_back(new XboxControls());
+  controls.push_back(new XboxControls());
 #else
   // MagneticRotaryEncoder *rotary_encoder = new MagneticRotaryEncoder(
   //     MAGNETIC_ROTARY_ENCODER_CS_GPIO,
