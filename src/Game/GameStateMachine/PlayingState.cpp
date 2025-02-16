@@ -54,7 +54,7 @@ for(int player=0; player<game->players; player++) {
     }
     else
     {
-      ESP_LOGI(TAG, "Allow respawn ship in 2 seconds");
+      ESP_LOGI(TAG, "Allow respawn ship %d in 2 seconds", player);
       respawn_cooldown.at(player) = 2;
       is_respawning.at(player) = true;
     }

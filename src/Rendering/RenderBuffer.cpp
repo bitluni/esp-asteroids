@@ -39,18 +39,20 @@ void RenderBuffer::renderSegment(bool laser, b2Vec2 start, const b2Vec2 &end, in
                               .laser = laser});
 }
 
-b2Vec2 RenderBuffer::draw_text(b2Vec2 start, float x, float y, const char *text, bool measure)
+b2Vec2 RenderBuffer::draw_text(b2Vec2 start, float x, float y, const char *text, bool measure, int only1char)
 {
     float left = FLT_MAX, right = -FLT_MAX, top = FLT_MAX, bottom = -FLT_MAX;
 
     float default_width = _font->get_default_width();
     float x_scale = _font->get_x_scale();
     float y_scale = _font->get_y_scale();
+    const char *textOrig=text;
     while (*text != '\0')
     {
         const Character *character = _font->get_character(*text);
         if (character)
         {
+if(only1char==-1 || text-textOrig==only1char) {
             const std::vector<FontCoord_t> &commands = character->commands;
             // draw the character
             if (commands.size() > 0)
@@ -82,6 +84,7 @@ b2Vec2 RenderBuffer::draw_text(b2Vec2 start, float x, float y, const char *text,
                     start = next;
                 }
             }
+}
             x += (character->right_pos - character->left_pos) * x_scale;
         }
         else
@@ -118,6 +121,7 @@ GameObject *removeNearest(b2Vec2 search_point, std::list<GameObject *> &objects)
 
 void RenderBuffer::render_if_needed(Game *game)
 {
+    static int only1char=0, only1charScore=0;
     if (needs_render)
     {
         drawing_frame->clear();
@@ -128,7 +132,7 @@ void RenderBuffer::render_if_needed(Game *game)
         {
             char tmp[100];
             sprintf(tmp, "%3d", game->get_score());
-            cur = draw_text(cur, -30, -28, tmp, false);
+            cur = draw_text(cur, -30, -28, tmp, false/*, only1charScore++%strlen(tmp)*/);
         }
         std::list<GameObject *> objects_to_draw(game->getObjects());
         // while we still have objects to draw
@@ -159,7 +163,7 @@ void RenderBuffer::render_if_needed(Game *game)
         if (main_text)
         {
             b2Vec2 text_size = draw_text(cur, 0, 0, main_text, true);
-            cur = draw_text(cur, 0.0f - text_size.x / 2.0f, 0.0f - text_size.y / 2.0f, main_text, false);
+            cur = draw_text(cur, 0.0f - text_size.x / 2.0f, 0.0f - text_size.y / 2.0f, main_text, false, only1char++%strlen(main_text));
         }
         // move back to the top left corner ready for the next draw pass
         renderSegment(false, cur, b2Vec2(-30, -30));

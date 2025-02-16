@@ -20,7 +20,7 @@ GameObject::GameObject(GAME_OBJECTS objectType, const b2Vec2 *points, int numPoi
         this->points[i].Set(points[i].x * scale, points[i].y * scale);
     }
     this->numPoints = numPoints;
-    this->player=0;
+    this->player=player;
 }
 
 GameObject::~GameObject()
