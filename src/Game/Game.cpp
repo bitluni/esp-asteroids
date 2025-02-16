@@ -51,7 +51,6 @@ Game::Game(float size, std::vector<Controls *> controls, SoundFX *sound_fx)
 
     current_game_state_handler = game_state_start_handler;
     this->score = 0;
-//    this->lives = 3;
 }
 
 void Game::start_new_game()
@@ -62,8 +61,8 @@ void Game::start_new_game()
     for(int player=0; player<players; player++) {
         add_player_ship(player);
         add_lives(player);
-        set_score(0);
     }
+    set_score(0);
 }
 
 void Game::reset()
@@ -84,7 +83,6 @@ void Game::reset()
         _is_ship_hit.at(player)=false;
     }
     score = 0;
-//    lives = 3;
     _did_asteroids_collide = false;
     asteroid_speed = ASTEROID_INITIAL_SPEED;
 }
@@ -97,9 +95,7 @@ void Game::add_player_ship(int player)
 
 void Game::destroy_player_ship(int player)
 {
-ESP_LOGI(TAG, "objects.size pre: %d", objects.size());
     objects.remove(ships[player]);
-ESP_LOGI(TAG, "objects.size post: %d", objects.size());
     delete (ships[player]);
     ships.at(player) = nullptr;
 }

@@ -6,7 +6,6 @@
 #include "RenderBuffer.hpp"
 
 #define PIN_NUM_LASER GPIO_NUM_32
-//#define PIN_NUM_LASER GPIO_NUM_19
 
 class Game;
 
