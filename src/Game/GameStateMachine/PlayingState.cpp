@@ -32,7 +32,7 @@ for(int player=0; player<game->players; player++) {
   // handle respawn
   if (is_respawning[player])
   {
-    respawn_cooldown.at(player) = respawn_cooldown[player]-elapsed_time;
+    respawn_cooldown.at(player) -= elapsed_time;
     if (respawn_cooldown[player] < 0 && game->get_controls(player)->is_firing())
     {
       ESP_LOGI(TAG, "Respawn");
@@ -76,7 +76,7 @@ for(int player=0; player<game->players; player++) {
       }
       else
       {
-        thrust_sound_cooldown.at(player) = thrust_sound_cooldown[player]-elapsed_time;
+        thrust_sound_cooldown.at(player) -= elapsed_time;
       }
       ship->set_is_thrusting(true);
     }
@@ -87,7 +87,7 @@ for(int player=0; player<game->players; player++) {
     // handle the fire button
     if (firing_cooldown.at(player) > 0)
     {
-      firing_cooldown.at(player) = firing_cooldown[player]-elapsed_time;
+      firing_cooldown.at(player) -= elapsed_time;
     }
     if (game->get_controls(player)->is_firing() && firing_cooldown[player] <= 0 && game->can_add_bullet(player))
     {
@@ -100,8 +100,8 @@ for(int player=0; player<game->players; player++) {
   if (!game->has_asteroids())
   {
     game->increase_difficulty();
+    for(int player=0; player<game->players; player++) game->reset_player_ship(player);
     // need to create new asteroids
-    game->reset_player_ship(player);//!
     game->add_asteroids();
   }
 }

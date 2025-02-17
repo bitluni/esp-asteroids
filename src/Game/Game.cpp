@@ -151,7 +151,7 @@ bool Game::has_asteroids()
 
 void Game::reset_player_ship(int player)
 {
-    ships[player]->setPosition(b2Vec2(0, 0));
+    if(ships[player]) ships[player]->setPosition(b2Vec2(0, 0));
 }
 
 void Game::add_asteroids()
