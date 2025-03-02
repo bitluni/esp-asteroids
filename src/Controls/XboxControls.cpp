@@ -36,22 +36,26 @@ while(!(xboxController.isConnected())) {
 }
 }
 
+void XboxControls::update() {
+  xboxController.onLoop();
+}
+
 bool XboxControls::is_firing()
 {
-  xboxController.onLoop();
+  update();
 //  Serial.print(xboxController->xboxNotif.btnA);
   return xboxController.xboxNotif.btnA;
 }
 
 float XboxControls::get_thrust()
 {
-  xboxController.onLoop();
+  update();
   return (float)xboxController.xboxNotif.trigRT / XboxControllerNotificationParser::maxTrig;
 }
 
 float XboxControls::get_direction()
 {
-  xboxController.onLoop();
+  update();
   float x=(float)xboxController.xboxNotif.joyLHori / XboxControllerNotificationParser::maxJoy*2.0f-1.0f;
   float y=(float)xboxController.xboxNotif.joyLVert / XboxControllerNotificationParser::maxJoy*2.0f-1.0f;
 //  ESP_LOGI(TAG, "%f,%f", x, y);
@@ -62,13 +66,21 @@ float XboxControls::get_direction()
 
 void XboxControls::shake()
 {
-  xboxController.onLoop();
+  //ESP_LOGI(TAG, "shake()");
+  update();
   XboxSeriesXHIDReportBuilder_asukiaaa::ReportBase repo;
   repo.setAllOff();
   repo.v.select.shake = true;
   repo.v.power.shake = 30;
   repo.v.timeActive = 50;    // 0.5 second
-  // shakes, but Guru Meditation Error: Core  0 panic'ed (LoadProhibited). Exception was unhandled.
-  //xboxController.writeHIDReport(repo);
-  //vTaskDelay(500 / portTICK_PERIOD_MS);
+  xboxController.writeHIDReport(repo);
+}
+
+int XboxControls::get_function_key() {
+  //ESP_LOGI(TAG, "get_function_key()");
+  if(xboxController.xboxNotif.btnXbox) return 1;
+  else if(xboxController.xboxNotif.btnSelect) return 2;
+  else if(xboxController.xboxNotif.btnStart) return 3;
+  else if(xboxController.xboxNotif.btnRB) return 4;
+  else return 0;
 }

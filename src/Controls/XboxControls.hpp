@@ -12,6 +12,7 @@ private:
 // any xbox controller
   XboxSeriesXControllerESP32_asukiaaa::Core xboxController;
 //  XboxSeriesXHIDReportBuilder_asukiaaa::ReportBase *repo;
+  void update();
 
 public:
   XboxControls();
@@ -19,6 +20,7 @@ public:
   float get_thrust();
   float get_direction();
   void shake();
+  int get_function_key();
 };
 
 #endif

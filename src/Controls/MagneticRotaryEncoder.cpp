@@ -1,3 +1,5 @@
+#ifndef ARDUINO_M5STACK_CORES3
+
 #include <cstring>
 #include "esp_log.h"
 #include "driver/spi_master.h"
@@ -188,3 +190,5 @@ MagneticRotaryEncoder::MagneticRotaryEncoder(gpio_num_t cs, gpio_num_t clk, gpio
 MagneticRotaryEncoder::~MagneticRotaryEncoder()
 {
 }
+
+#endif

@@ -1,3 +1,5 @@
+#ifndef ARDUINO_M5STACK_CORES3
+
 #include <cstring>
 #include "driver/timer.h"
 #include "DACRenderer.h"
@@ -103,3 +105,4 @@ DACRenderer::DACRenderer(float world_size, Font *font)
       128.0f / world_size,
       font);
 }
+#endif

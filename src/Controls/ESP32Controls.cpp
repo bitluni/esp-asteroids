@@ -23,7 +23,3 @@ float ESP32Controls::get_direction()
 {
   return rotary_encoder->get_angle();
 }
-
-void ESP32Controls::shake()
-{
-}

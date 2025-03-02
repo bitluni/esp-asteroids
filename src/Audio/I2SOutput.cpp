@@ -75,9 +75,15 @@ void i2sWriterTask(void *param)
 void I2SOutput::start()
 {
     i2s_pin_config_t i2sPins = {
+#ifdef ARDUINO_M5STACK_CORES3
+        .bck_io_num = 12, // TODO
+        .ws_io_num = 0,
+        .data_out_num = 13,
+#else
         .bck_io_num = GPIO_NUM_12,
         .ws_io_num = GPIO_NUM_0,
         .data_out_num = GPIO_NUM_2,
+#endif
         .data_in_num = -1};
     // i2s config for writing both channels of I2S
     i2s_config_t i2sConfig = {

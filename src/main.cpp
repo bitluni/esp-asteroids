@@ -15,7 +15,7 @@ GameLoop: "Game Loop", 0
 #include "esp_spiffs.h"
 
 //#include "WiFi.h"
-#include "Rendering/DACRenderer.h"
+//#include "Rendering/DACRenderer.h"
 //#include "Rendering/DMADACRenderer.h"
 //#include "Rendering/HeltecOLEDRenderer.hpp"
 #include "Rendering/SPIRenderer.h"
@@ -35,7 +35,9 @@ GameLoop: "Game Loop", 0
 //#include "Fonts/SimpleFont.hpp"
 
 #include <Arduino.h>
+#ifndef ARDUINO_M5STACK_CORES3
 #include <M5Core2.h>
+#endif
 //#include <M5Unified.h>
 
 #define WORLD_SIZE 30
@@ -64,7 +66,9 @@ static const char *TAG = "APP";
 
 
 void setup() {
+#ifndef ARDUINO_M5STACK_CORES3
   M5.begin(false, false, false, false, kMBusModeOutput, true);
+#endif
   Serial.begin(115200);
   uint32_t Freq;
   Freq = getCpuFrequencyMhz(); Serial.print("CPU frequency: "); Serial.print(Freq); Serial.println(" MHz");
@@ -127,7 +131,7 @@ void app_main()
 #ifdef Xbox_Controls_hpp
   //XboxControls *controls = new XboxControls();
   controls.push_back(new XboxControls());
-  controls.push_back(new XboxControls());
+//  controls.push_back(new XboxControls());
 #else
   // MagneticRotaryEncoder *rotary_encoder = new MagneticRotaryEncoder(
   //     MAGNETIC_ROTARY_ENCODER_CS_GPIO,
@@ -185,5 +189,10 @@ void app_main()
     steps_old=game_loop->steps;
     rendered_frames_old=renderer->rendered_frames;
     transactions_old=renderer->transactions;
+
+    if(controls[0]->get_function_key()==1) M5.shutdown();
+    else if(controls[0]->get_function_key()==2) renderer->set_mode(0);
+    else if(controls[0]->get_function_key()==3) renderer->set_mode(1);
+    else if(controls[0]->get_function_key()==4) renderer->set_mode(2);
   }
 }

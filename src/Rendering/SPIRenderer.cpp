@@ -6,7 +6,11 @@
 #include "driver/gpio.h"
 #include "driver/timer.h"
 
+#ifdef ARDUINO_M5STACK_CORES3
+#define PIN_NUM_MOSI 23 // TODO
+#else
 #define PIN_NUM_MOSI GPIO_NUM_23
+#endif
 #define PIN_NUM_CLK GPIO_NUM_18
 #define PIN_NUM_CS GPIO_NUM_27
 #define PIN_NUM_LDAC GPIO_NUM_19
@@ -144,6 +148,9 @@ void SPIRenderer::start()
                        // .post_cb = spi_post_callback // We'll use this for the LDAC line
   };
   //Initialize the SPI bus
+#ifdef ARDUINO_M5STACK_CORES3
+#define HSPI_HOST SPI3_HOST // TODO
+#endif
   ESP_ERROR_CHECK(spi_bus_initialize(HSPI_HOST, &buscfg, /*1*/3));
   //Attach the SPI device
   ESP_ERROR_CHECK(spi_bus_add_device(HSPI_HOST, &devcfg, &spi));
