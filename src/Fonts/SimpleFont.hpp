@@ -14,11 +14,11 @@ public:
   const Character *get_character(char c);
   float get_x_scale()
   {
-    return 2;
+    return 2 * 2;
   }
   float get_y_scale()
   {
-    return 4;
+    return 4 * 2;
   }
   float get_default_width()
   {

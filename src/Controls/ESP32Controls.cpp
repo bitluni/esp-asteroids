@@ -8,12 +8,12 @@ ESP32Controls::ESP32Controls(RotaryEncoder *rotary_encoder, Button *fire_button,
 
 bool ESP32Controls::is_firing()
 {
-  return fire_button->get_button_pushed();
+  return true; //fire_button->get_button_pushed();
 }
 
 bool ESP32Controls::is_thrusting()
 {
-  return thrust_button->get_button_pushed();
+  return false; //thrust_button->get_button_pushed();
 }
 
 float ESP32Controls::get_direction()

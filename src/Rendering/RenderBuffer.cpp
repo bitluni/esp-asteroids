@@ -128,7 +128,7 @@ void RenderBuffer::render_if_needed(Game *game)
         {
             char tmp[100];
             sprintf(tmp, "%03d", game->get_score());
-            cur = draw_text(cur, -30, -28, tmp, false);
+            //cur = draw_text(cur, -30, -28, tmp, false);
         }
         std::list<GameObject *> objects_to_draw(game->getObjects());
         // while we still have objects to draw
@@ -136,6 +136,8 @@ void RenderBuffer::render_if_needed(Game *game)
         {
             // get the nearest object to the current search_point
             auto object = removeNearest(cur, objects_to_draw);
+			//skip hud
+			if(object->getObjectType() == HUD) continue;
             auto numPoints = object->getNumPoints();
             auto points = object->getPoints();
             auto position = object->getPosition();

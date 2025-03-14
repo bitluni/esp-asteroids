@@ -16,6 +16,7 @@
 // #include "Controls/MagneticRotaryEncoder.hpp"
 #include "Controls/Button.hpp"
 #include "Controls/ESP32Controls.hpp"
+#include "Controls/NunchuckControls.hpp"
 #include "Audio/I2SOutput.h"
 #include "Audio/WAVFile.h"
 #include "Audio/SoundFX.h"
@@ -92,18 +93,19 @@ void app_main()
   //     MAGNETIC_ROTARY_ENCODER_CLK_GPIO,
   //     MAGNETIC_ROTARY_ENCODER_MISO_GPIO,
   //     MAGNETIC_ROTARY_ENCODER_MOSI_GPIO);
-  RotaryEncoder *rotary_encoder = new MechanicalRotaryEncoder(ROTARY_ENCODER_CLK_GPIO, ROTARY_ENCODER_DI_GPIO);
+  //RotaryEncoder *rotary_encoder = new MechanicalRotaryEncoder(ROTARY_ENCODER_CLK_GPIO, ROTARY_ENCODER_DI_GPIO);
 
   free_ram = esp_get_free_heap_size();
   ESP_LOGI(TAG, "Free ram after RotaryEncoder %d", free_ram);
 
-  Button *fire_button = new Button(FIRE_GPIO);
-  Button *thrust_button = new Button(THRUST_GPIO);
+  //Button *fire_button = new Button(FIRE_GPIO);
+  //Button *thrust_button = new Button(THRUST_GPIO);
 
   free_ram = esp_get_free_heap_size();
   ESP_LOGI(TAG, "Free ram after Button %d", free_ram);
 
-  ESP32Controls *controls = new ESP32Controls(rotary_encoder, fire_button, thrust_button);
+  //ESP32Controls *controls = new ESP32Controls(rotary_encoder, fire_button, thrust_button);
+  NunchuckControls *controls = new NunchuckControls();
   ESP_LOGI(TAG, "Starting world");
   Game *game = new Game(WORLD_SIZE, controls, sound_fx);
 
@@ -113,9 +115,9 @@ void app_main()
   SimpleFont *font = new SimpleFont();
 
   ESP_LOGI(TAG, "Starting renderer");
-  // Renderer *renderer = new DACRenderer(WORLD_SIZE, font);
+  Renderer *renderer = new DACRenderer(WORLD_SIZE, font);
   // Renderer *renderer = new HeltecOLEDRenderer(WORLD_SIZE, font);
-  Renderer *renderer = new SPIRenderer(WORLD_SIZE, font);
+  // Renderer *renderer = new SPIRenderer(WORLD_SIZE, font);
   renderer->start();
 
   GameLoop *game_loop = new GameLoop(game, renderer->get_render_buffer());

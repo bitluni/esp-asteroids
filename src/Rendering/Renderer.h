@@ -5,7 +5,7 @@
 #include <vector>
 #include "RenderBuffer.hpp"
 
-#define PIN_NUM_LASER GPIO_NUM_32
+#define PIN_NUM_LASER GPIO_NUM_4
 
 class Game;
 
